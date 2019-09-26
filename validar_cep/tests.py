@@ -43,4 +43,7 @@ class CepFormTests(TestCase):
         em pares, então gera a mensagem de erro a ser mostrada para o usuário destacando os pares alternados
         repetitivos encontrados. Retorna String, com a mensagem de erro a ser mostrada ao usuário
         """
-        self.assertIs(CepForm.gerar_mensagem_erro('121426'), False)
+        self.assertIs(CepForm.gerar_mensagem_erro('121426'), 'CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!<br> <span style="color: blue">1</span>2<span style="color: blue">1</span>426')
+        #self.assertIs(CepForm.gerar_mensagem_erro('523563'), '')
+        self.assertIs(CepForm.gerar_mensagem_erro('552523'), 'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!<br> 5<span style="color: blue">5</span>2<span style="color: blue">5</span>23<br> 55<span style="color: blue">2</span>5<span style="color: blue">2</span>3')
+        #self.assertIs(CepForm.gerar_mensagem_erro('112233'), '')
