@@ -7,6 +7,9 @@ from validar_cep.forms import CepForm
 
 
 class ValidarCepView(FormView):
+    """
+    View que retorna a página com o form, onde o usuário digita o cep
+    """
     form_class = CepForm
     template_name = 'validar_cep/index.html'
     success_url = '/'
