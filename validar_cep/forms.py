@@ -26,8 +26,8 @@ class CepForm(forms.Form):
             raise forms.ValidationError("Somente números!")
 
         # verificar se esta dentro da faixa de valores permitidos, maior que 100.000 e menor que 999999
-        # data_num = float(data)
-        if len(data) != 6 or data == '100000' or data == '999999':
+        data_num = int(data)
+        if data_num <= 100000 or data_num >= 999999:
             raise forms.ValidationError("O CEP é um número maior que 100.000 e menor que 999999!")
 
         # '2. O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares'
