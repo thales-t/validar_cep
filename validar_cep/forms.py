@@ -12,7 +12,7 @@ class CepForm(forms.Form):
                           help_text='Digite um número de CEP válido.<br> '
                                     '1. O CEP é um número maior que 100.000 e menor que 999999<br>'
                                     '2. O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares<br>'
-                                    '3. Digite somente números'
+                                    '3. Digite somente números inteiros'
                           )
 
     def clean_cep(self):
@@ -23,7 +23,7 @@ class CepForm(forms.Form):
         # re.sub("\D", "", "aas30dsa20")
         # verificar se tem letras
         if re.search("\D", data) is not None:
-            raise forms.ValidationError("Somente números!")
+            raise forms.ValidationError("Somente números inteiros!")
 
         # verificar se esta dentro da faixa de valores permitidos, maior que 100.000 e menor que 999999
         data_num = int(data)
