@@ -22,63 +22,59 @@ class CepForm(forms.Form):
         """
         if cep <= 100000 or cep >= 999999:
             return False
-        else: return True
-
-    # def verificar_somente_numero(cep):
-    #     """
-    #         Recebe uma string(CEP) e verifica se é um número inteiro
-    #     :return: True se o cep só conter um número inteiro, False caso contrário
-    #     """
-    #     if re.search("\D", cep) is not None:
-    #         return False
-    #     else: return True
+        else:
+            return True
 
     def verificar_digito_repetitivo_alternado(cep):
         """
-        Recebe uma string(CEP) e verifica se O CEP não contem nenhum dígito repetitivo alternado em pares
+        Recebe uma string(CEP) e verifica se o CEP não contém nenhum dígito repetitivo alternado em pares
         :return: True se o cep não conter nenhum dígito repetitivo alternado em pares, False caso conter
         """
-        if re.search("(\d)(?=\d\\1{1,1})", cep) is not None:
+        if re.search("(\d)(?=\d\\1{1,1})", cep) is None:
+            return True
+        else:
             return False
-        else: return True
+
+    def gerar_mensagem_erro(cep):
+        """
+        Recebe uma string(CEP) que contém um ou mais dígitos repetitivos alternados em pares, então
+        gera a mensagem de erro a ser mostrada para o usuário destacando os pares alternados repetitivos encontrados.
+        :return: String, com a mensagem de erro a ser mostrada ao usuário
+        """
+        mens_erro = 'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!'
+        for match in re.finditer("(\d)(?=\d\\1{1,1})", cep):
+            mens_erro += '<br> %s<span style="color: blue" >%s</span>%s<span style="color: blue" >%s</span>%s' % (
+                match.string[:match.start()], match.string[match.start()],
+                match.string[match.start() + 1], match.string[match.start() + 2],
+                match.string[match.start() + 3:] if len(match.string) > match.start() + 3 else '')
+        return mens_erro
+
 
     def clean_cep(self):
-        """
-        Verifica se o valor informado é um CEP válido
-        :return: O valor do CEP, se este for um valor válido, caso contrário da um raise forms.ValidationError,
-                 retornando a mensagem de errro.
-        """
-        data = self.cleaned_data['cep']
+            """
+            Verifica se o valor informado é um CEP válido
+            :return: O valor do CEP, se este for um valor válido, caso contrário da um raise forms.ValidationError,
+                     retornando a mensagem de errro.
+            """
+            data = self.cleaned_data['cep']
 
-        # prog = re.compile(pattern)
-        # result = prog.match(string)
-        # re.sub("\D", "", "aas30dsa20")
-        #re.search("\D", data) is not None
+            # prog = re.compile(pattern)
+            # result = prog.match(string)
+            # re.sub("\D", "", "aas30dsa20")
+            #re.search("\D", data) is not None
 
-        # verificar se só contem dígitos
-        if data.isdigit() is False:
-            raise forms.ValidationError("Somente números inteiros!")
+            # verificar se só contem dígitos
+            if data.isdigit() is False:
+                raise forms.ValidationError("Somente números inteiros!")
 
-        # verificar se esta dentro da faixa de valores permitidos, maior que 100.000 e menor que 999999
-        # data_num = int(data)
-        if CepForm.verificar_faixa_valores(int(data)):
-            raise forms.ValidationError("O CEP é um número maior que 100.000 e menor que 999999!")
+            # verificar se esta dentro da faixa de valores permitidos, maior que 100.000 e menor que 999999
+            if CepForm.verificar_faixa_valores(int(data)) is False:
+                raise forms.ValidationError("O CEP é um número maior que 100.000 e menor que 999999!")
 
-        # '2. O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares'
-        if CepForm.verificar_digito_repetitivo_alternado(data) is False:
-            mens_erro = 'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!'
-            for match in re.finditer("(\d)(?=\d\\1{1,1})", data):
-                mens_erro += '<br> %s<span style="color: blue" >%s</span>%s<span style="color: blue" >%s</span>%s' % (
-                match.string[:match.start()],  match.string[match.start()],
-                match.string[match.start()+1], match.string[match.start()+2],
-                match.string[match.start() + 3:] if len(match.string) > match.start() + 3 else '')
+            # 'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares'
+            if CepForm.verificar_digito_repetitivo_alternado(data) is False:
+                raise forms.ValidationError(mark_safe(CepForm.gerar_mensagem_erro(data)))
 
-
-                # cep = '%s<span style="color: %s" >%s</span>%s' % (
-                # match.string[:match.start()+2], cor, match.string[match.start()+2], match.string[match.start() + 3:])
-
-            raise forms.ValidationError(mark_safe(mens_erro))
-
-        # Always return a value to use as the new cleaned data, even if
-        # this method didn't change it.
-        return data
+            # Always return a value to use as the new cleaned data, even if
+            # this method didn't change it.
+            return data
