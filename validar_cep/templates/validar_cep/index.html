@@ -35,13 +35,7 @@
         </div>
     </div>
 
-</div>
-
-{#{% if error %}#}
-{#    <p style="text-align: center"> {{ error }} </p>#}
-{#    {% endif %}#}
-
-{% if form.errors %}
+    {% if form.errors %}
     {% for field in form %}
         {% for error in field.errors %}
             <div class="alert alert-danger">
@@ -55,11 +49,19 @@
         </div>
     {% endfor %}
 
-{% elif result %}
-    <div class="table-responsive container">
-        {{ result }}
+{% elif form.data.cep %}
+    <div class="table-responsive container alert alert-info">
+        Cep Válido! {{ form.data.cep }}
     </div>
 {% endif %}
+
+
+</div>
+
+{#{% if error %}#}
+{#    <p style="text-align: center"> {{ error }} </p>#}
+{#    {% endif %}#}
+
 
 </body>
 </html>

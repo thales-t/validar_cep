@@ -1,4 +1,8 @@
 .helptext{
     font-size: small;
+    text-align: center;
 }
 
+.alert-danger{
+    text-align: center;
+}
