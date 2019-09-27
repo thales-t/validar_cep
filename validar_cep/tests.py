@@ -1,7 +1,7 @@
 from django.test import TestCase
-
-# Create your tests here.
 from validar_cep.forms import CepForm
+from django.test import Client
+# Create your tests here.
 
 
 class CepFormTests(TestCase):
@@ -43,13 +43,26 @@ class CepFormTests(TestCase):
         repetitivos encontrados. Retorna String, com a mensagem de erro a ser mostrada ao usuário
         """
         self.assertEqual(CepForm.gerar_mensagem_erro('121426'),
-                         'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!'
+                         'O CEP não pode conter nenhum dígito repetitivo alternado em pares!'
                          '<br><span style="color: blue">1</span>2<span style="color: blue">1</span>426')
         self.assertEqual(CepForm.gerar_mensagem_erro('523563'),
-                         'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!')
+                         'O CEP não pode conter nenhum dígito repetitivo alternado em pares!')
         self.assertEqual(CepForm.gerar_mensagem_erro('552523'),
-                         'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!'
+                         'O CEP não pode conter nenhum dígito repetitivo alternado em pares!'
                          '<br>5<span style="color: blue">5</span>2<span style="color: blue">5</span>23'
                          '<br>55<span style="color: blue">2</span>5<span style="color: blue">2</span>3')
         self.assertEqual(CepForm.gerar_mensagem_erro('112233'),
-                         'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!')
+                         'O CEP não pode conter nenhum dígito repetitivo alternado em pares!')
+
+    def test_site_response(self):
+        c = Client()
+        response = c.post('', {'cep': '121426'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context_data['form'].errors), 1)
+        self.assertEqual(response.context_data['form'].errors['cep'][0],
+                         'O CEP não pode conter nenhum dígito repetitivo alternado em pares!'
+                         '<br><span style="color: blue">1</span>2<span style="color: blue">1</span>426')
+
+        response = c.post('', {'cep': '523563'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context_data['form'].errors), 0)

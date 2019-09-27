@@ -45,7 +45,7 @@ class CepForm(forms.Form):
         gera a mensagem de erro a ser mostrada para o usuário destacando os pares alternados repetitivos encontrados.
         :return: String, com a mensagem de erro a ser mostrada ao usuário
         """
-        mens_erro = 'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!'
+        mens_erro = 'O CEP não pode conter nenhum dígito repetitivo alternado em pares!'
         for match in CepForm.pattern.finditer(cep):
             mens_erro += '<br>%s<span style="color: blue">%s</span>%s<span style="color: blue">%s</span>%s' % (
                 match.string[:match.start()], match.string[match.start()],
@@ -70,7 +70,7 @@ class CepForm(forms.Form):
             if CepForm.verificar_faixa_valores(int(data)) is False:
                 raise forms.ValidationError("O CEP é um número maior que 100.000 e menor que 999999!")
 
-            # 'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares'
+            # 'O CEP não pode conter nenhum dígito repetitivo alternado em pares'
             if CepForm.verificar_digito_repetitivo_alternado(data) is False:
                 raise forms.ValidationError(mark_safe(CepForm.gerar_mensagem_erro(data)))
 
