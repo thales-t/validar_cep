@@ -1,1 +1,1 @@
-"# validar_cep" 
+Validador de CEPs para teste seletivo.
