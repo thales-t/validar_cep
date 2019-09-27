@@ -14,6 +14,7 @@ class CepForm(forms.Form):
                                     '2. O CEP não pode conter nenhum dígito repetitivo alternado em pares<br>'
                                     '3. Somente dígitos'
                           )
+    pattern = re.compile('(\d)(?=\d\\1{1,1})')
 
     def verificar_faixa_valores(cep):
         """
@@ -30,7 +31,7 @@ class CepForm(forms.Form):
         Recebe uma string(CEP) e verifica se o CEP não contém nenhum dígito repetitivo alternado em pares
         :return: True se o cep não conter nenhum dígito repetitivo alternado em pares, False caso conter
         """
-        if re.search("(\d)(?=\d\\1{1,1})", cep) is None:
+        if CepForm.pattern.search(cep) is None:
             return True
         else:
             return False
@@ -42,8 +43,8 @@ class CepForm(forms.Form):
         :return: String, com a mensagem de erro a ser mostrada ao usuário
         """
         mens_erro = 'O CEP não pode conter nenhum nenhum dígito repetitivo alternado em pares!'
-        for match in re.finditer("(\d)(?=\d\\1{1,1})", cep):
-            mens_erro += '<br> %s<span style="color: blue" >%s</span>%s<span style="color: blue" >%s</span>%s' % (
+        for match in CepForm.pattern.finditer(cep):
+            mens_erro += '<br>%s<span style="color: blue">%s</span>%s<span style="color: blue">%s</span>%s' % (
                 match.string[:match.start()], match.string[match.start()],
                 match.string[match.start() + 1], match.string[match.start() + 2],
                 match.string[match.start() + 3:] if len(match.string) > match.start() + 3 else '')
@@ -58,11 +59,6 @@ class CepForm(forms.Form):
             """
             data = self.cleaned_data['cep']
 
-            # prog = re.compile(pattern)
-            # result = prog.match(string)
-            # re.sub("\D", "", "aas30dsa20")
-            #re.search("\D", data) is not None
-
             # verificar se só contem dígitos
             if data.isdigit() is False:
                 raise forms.ValidationError("Somente números inteiros!")
@@ -75,6 +71,4 @@ class CepForm(forms.Form):
             if CepForm.verificar_digito_repetitivo_alternado(data) is False:
                 raise forms.ValidationError(mark_safe(CepForm.gerar_mensagem_erro(data)))
 
-            # Always return a value to use as the new cleaned data, even if
-            # this method didn't change it.
             return data
