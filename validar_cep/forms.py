@@ -16,6 +16,7 @@ class CepForm(forms.Form):
                           )
     pattern = re.compile('(\d)(?=\d\\1{1,1})')
 
+    @staticmethod
     def verificar_faixa_valores(cep):
         """
         Recebe um int(CEP) e verifica se O CEP é um número maior que 100.000 e menor que 999999
@@ -26,6 +27,7 @@ class CepForm(forms.Form):
         else:
             return True
 
+    @staticmethod
     def verificar_digito_repetitivo_alternado(cep):
         """
         Recebe uma string(CEP) e verifica se o CEP não contém nenhum dígito repetitivo alternado em pares
@@ -36,6 +38,7 @@ class CepForm(forms.Form):
         else:
             return False
 
+    @staticmethod
     def gerar_mensagem_erro(cep):
         """
         Recebe uma string(CEP) que contém um ou mais dígitos repetitivos alternados em pares, então
