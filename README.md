@@ -1,1 +1,1 @@
-Validador de CEPs para teste seletivo.
+Validador de CEPs
