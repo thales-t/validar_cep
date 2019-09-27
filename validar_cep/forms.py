@@ -47,31 +47,33 @@ class CepForm(forms.Form):
         """
         mens_erro = 'O CEP não pode conter nenhum dígito repetitivo alternado em pares!'
         for match in CepForm.pattern.finditer(cep):
-            mens_erro += '<br>%s<span style="color: blue">%s</span>%s<span style="color: blue">%s</span>%s' % (
-                match.string[:match.start()], match.string[match.start()],
-                match.string[match.start() + 1], match.string[match.start() + 2],
-                match.string[match.start() + 3:] if len(match.string) > match.start() + 3 else '')
+            mens_erro += '<br>%s<span style="color: blue">%s</span>%s<span style="color: blue">%s</span>%s ' \
+                         'Aqui, %s é um dígito repetitivo alternado em par.' % (
+                             match.string[:match.start()], match.string[match.start()],
+                             match.string[match.start() + 1], match.string[match.start() + 2],
+                             match.string[match.start() + 3:] if len(match.string) > match.start() + 3 else '',
+                             match.string[match.start()])
+
         return mens_erro
 
-
     def clean_cep(self):
-            """
-            Verifica se o valor informado é um CEP válido
-            :return: O valor do CEP, se este for um valor válido, caso contrário da um raise forms.ValidationError,
-                     retornando a mensagem de errro.
-            """
-            data = self.cleaned_data['cep']
+        """
+        Verifica se o valor informado é um CEP válido
+        :return: O valor do CEP, se este for um valor válido, caso contrário da um raise forms.ValidationError,
+                 retornando a mensagem de errro.
+        """
+        data = self.cleaned_data['cep']
 
-            # verificar se só contem dígitos
-            if data.isdigit() is False:
-                raise forms.ValidationError("Somente números inteiros!")
+        # verificar se só contem dígitos
+        if data.isdigit() is False:
+            raise forms.ValidationError("Somente dígitos!")
 
-            # verificar se esta dentro da faixa de valores permitidos, maior que 100.000 e menor que 999999
-            if CepForm.verificar_faixa_valores(int(data)) is False:
-                raise forms.ValidationError("O CEP é um número maior que 100.000 e menor que 999999!")
+        # verificar se esta dentro da faixa de valores permitidos, maior que 100.000 e menor que 999999
+        if CepForm.verificar_faixa_valores(int(data)) is False:
+            raise forms.ValidationError("O CEP é um número maior que 100.000 e menor que 999999!")
 
-            # 'O CEP não pode conter nenhum dígito repetitivo alternado em pares'
-            if CepForm.verificar_digito_repetitivo_alternado(data) is False:
-                raise forms.ValidationError(mark_safe(CepForm.gerar_mensagem_erro(data)))
+        # 'O CEP não pode conter nenhum dígito repetitivo alternado em pares'
+        if CepForm.verificar_digito_repetitivo_alternado(data) is False:
+            raise forms.ValidationError(mark_safe(CepForm.gerar_mensagem_erro(data)))
 
-            return data
+        return data
